@@ -30,15 +30,13 @@ static volatile bool txUdidReady = false;
 // ALERT LINE HELPERS
 // ─────────────────────────────────────────────────────────────
 static void alert_assert() {
-  // configure as output, drive low (open-drain active)
-  DDRB |= (1 << PIN_ALERT);
-  PORTB &= ~(1 << PIN_ALERT);
+  PORTB &= ~(1 << PIN_ALERT); // ensure output value is low
+  DDRB |= (1 << PIN_ALERT);   // drive low
 }
 
 static void alert_release() {
-  // configure as input, pull-up on (passive high)
-  DDRB &= ~(1 << PIN_ALERT);
-  PORTB |= (1 << PIN_ALERT);
+  DDRB &= ~(1 << PIN_ALERT);  // input (Hi-Z)
+  PORTB &= ~(1 << PIN_ALERT); // disable pull-up
 }
 
 // ─────────────────────────────────────────────────────────────
