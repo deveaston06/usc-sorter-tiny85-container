@@ -24,11 +24,9 @@
 // 2-3:  deviceType      (uint16)
 // 4-7:  serialNumber    (uint32) — written uniquely at flash time
 // 8:    capabilities    (uint8)
-// 9:    AV flag         (uint8)  — 0x01 = resolved
 // 10:   assigned addr   (uint8)
 #define EE_UDID_START 0
-#define EE_AV_FLAG 9
-#define EE_ASSIGNED_ADDR 10
+#define EE_ASSIGNED_ADDR 9
 #define UDID_SIZE 9
 
 // ── UDID device type ──────────────────────────────────────────

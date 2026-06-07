@@ -128,7 +128,6 @@ static void processCommand() {
         addressResolved = true;
 
         // persist to EEPROM
-        EEPROM.write(EE_AV_FLAG, 0x01);
         EEPROM.write(EE_ASSIGNED_ADDR, assignedAddr);
 
         // restart Wire on new address
@@ -141,24 +140,22 @@ static void processCommand() {
         alert_release();
 
         led_blinkRedOnAssignment();
+      } else {
+        delay(20);
+        alert_assert();
       }
-      // else: UDID mismatch — we lost arbitration, stay unresolved
     }
     break;
 
   // ── PREPARE_ARP: reset AV flag, re-enter discovery ────────
   case CMD_PREPARE_ARP:
     addressResolved = false;
-    EEPROM.write(EE_AV_FLAG, 0x00);
 
     // move back to default ARP address
     Wire.end();
     Wire.begin(ADDR_ARP_DEFAULT);
     Wire.onReceive(onReceive);
     Wire.onRequest(onRequest);
-
-    // assert ALERT to signal unresolved state
-    alert_assert();
     break;
 
   // ── LED COMMANDS ───────────────────────────────────────────
@@ -179,29 +176,25 @@ static void processCommand() {
 // PUBLIC: INIT
 // ─────────────────────────────────────────────────────────────
 void iic_init() {
-  // ALERT pin as input with pull-up initially
-  DDRB &= ~(1 << PIN_ALERT);
-  PORTB |= (1 << PIN_ALERT);
+  alert_release();
 
   // load UDID from EEPROM
   udid_load();
 
-  // load persisted state
-  uint8_t avFlag = EEPROM.read(EE_AV_FLAG);
-  if (avFlag == 0x01) {
-    // previously resolved — rejoin at stored address
-    assignedAddr = EEPROM.read(EE_ASSIGNED_ADDR);
-    addressResolved = true;
-    Wire.begin(assignedAddr);
-  } else {
-    // unresolved — start at default ARP address and assert ALERT
-    addressResolved = false;
-    Wire.begin(ADDR_ARP_DEFAULT);
-    alert_assert();
-  }
+  addressResolved = false;
 
+  Wire.begin(ADDR_ARP_DEFAULT);
   Wire.onReceive(onReceive);
   Wire.onRequest(onRequest);
+
+  while (true) {
+    // one second longer than rp2040 synchronization,
+    // to also synchronize with other attiny85
+    if (millis() > 2000 || (PINB & (1 << PIN_ALERT)) == 0x00) {
+      alert_assert();
+      break;
+    }
+  }
 }
 
 // ─────────────────────────────────────────────────────────────

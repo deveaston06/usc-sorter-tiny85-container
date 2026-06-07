@@ -10,13 +10,13 @@ void setup() {
 
   // ── FIRST TIME ONLY: write unique UDID to EEPROM ──────────
   // Uncomment, flash with unique serial per device, then recomment.
+  // ATtiny doesn't need EEPROM.begin before EEPROM.write
   // iic_writeUDID(0x00000001); // device 1
   // iic_writeUDID(0x00000002); // device 2
   // iic_writeUDID(0x00000003); // device 3
 
   iic_init();
-  // iic_init() asserts ALERT if no stored address found,
-  // and triggers RP2040 to begin enumeration automatically.
+  // asserts ALERT triggers RP2040 to begin enumeration automatically.
 }
 
 // ─────────────────────────────────────────────────────────────
