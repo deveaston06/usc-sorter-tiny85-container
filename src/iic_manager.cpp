@@ -79,6 +79,20 @@ static bool udid_matches(const volatile uint8_t *buf) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// STAGGER HELPER
+// Uses 4 serial bytes (UDID[4..7]) and returns delay in milliseconds
+// ─────────────────────────────────────────────────────────────
+static uint16_t stagger_delay_ms() {
+  uint16_t serial_low = ((uint16_t)udid[6] << 8) | udid[7];
+
+  // 16-bit serial gives 65536 possible values
+  // Map to SLOT_MS (4ms) slots within a max window
+
+  uint16_t slot = serial_low % MAX_SLOTS;
+  return (slot + 1) * SLOT_MS;
+}
+
+// ─────────────────────────────────────────────────────────────
 // WIRE CALLBACKS (ISR context — keep short, no blocking)
 // ─────────────────────────────────────────────────────────────
 static void onReceive(int numBytes) {
@@ -183,18 +197,14 @@ void iic_init() {
 
   addressResolved = false;
 
+  // silent during stagger — do not listen yet
+  uint8_t stagger = udid[7];
+  delay(2000 + (uint16_t)stagger * 10);
+
   Wire.begin(ADDR_ARP_DEFAULT);
   Wire.onReceive(onReceive);
   Wire.onRequest(onRequest);
-
-  while (true) {
-    // one second longer than rp2040 synchronization,
-    // to also synchronize with other attiny85
-    if (millis() > 2000 || (PINB & (1 << PIN_ALERT)) == 0x00) {
-      alert_assert();
-      break;
-    }
-  }
+  alert_assert();
 }
 
 // ─────────────────────────────────────────────────────────────
