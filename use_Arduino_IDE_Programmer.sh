@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Use "./use_Arduino_IDE_Programmer.sh <PATH_TO_ARDUINO_SKETCH_DIRECTORY>"
 
 lastElement="${1##*/}"
 echo "$lastElement"
