@@ -199,7 +199,7 @@ void iic_init() {
 
   // silent during stagger — do not listen yet
   uint8_t stagger = udid[7];
-  delay(2000 + (uint16_t)stagger * 10);
+  delay(WAIT_FOR_RP2040_MS + (uint16_t)stagger * 10);
 
   Wire.begin(ADDR_ARP_DEFAULT);
   Wire.onReceive(onReceive);

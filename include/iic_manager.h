@@ -56,6 +56,9 @@
 #define SLOT_MS 4
 #define MAX_SLOTS (MAX_STAGGER_MS / SLOT_MS)
 
+// ── OTHER -----------------------------------------------------
+#define WAIT_FOR_RP2040_MS 1000
+
 void iic_init();
 void iic_update();
 void iic_writeUDID(uint32_t serialNumber);
