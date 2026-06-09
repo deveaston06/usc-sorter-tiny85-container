@@ -14,6 +14,7 @@ void setup() {
   // iic_writeUDID(0x00000001); // device 1
   // iic_writeUDID(0x00000002); // device 2
   // iic_writeUDID(0x00000003); // device 3
+  // iic_writeUDID(0x00000004); // device 4
 
   iic_init();
   // asserts ALERT triggers RP2040 to begin enumeration automatically.

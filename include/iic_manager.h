@@ -52,12 +52,12 @@
 // or in between multiples of <MAX_SLOTS>
 // This way there won't be any risk collision
 
-#define MAX_STAGGER_MS 2000
+#define MAX_STAGGER_MS 1600
 #define SLOT_MS 4
 #define MAX_SLOTS (MAX_STAGGER_MS / SLOT_MS)
 
 // ── OTHER -----------------------------------------------------
-#define WAIT_FOR_RP2040_MS 1000
+#define WAIT_FOR_RP2040_MS 400
 
 void iic_init();
 void iic_update();
