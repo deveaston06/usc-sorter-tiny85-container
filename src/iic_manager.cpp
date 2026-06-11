@@ -170,6 +170,8 @@ static void processCommand() {
     Wire.begin(ADDR_ARP_DEFAULT);
     Wire.onReceive(onReceive);
     Wire.onRequest(onRequest);
+
+    alert_assert();
     break;
 
   // ── LED COMMANDS ───────────────────────────────────────────
